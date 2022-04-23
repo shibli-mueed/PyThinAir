@@ -4,7 +4,8 @@ x = ['',
      'dirtyenv',
      'dirtyenv\\lib\\site-packages']
 
-sys.path.extend(x)
+for a in x:
+    sys.path.append(a)
 
 #system libraries
 from os import path,mkdir

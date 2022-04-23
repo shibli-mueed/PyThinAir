@@ -98,7 +98,7 @@ def scrap(dictionary,path):
                 content=i.selftext
                 content = remove_things(content)
 
-                phrase=f'''{phrase_choose()[0]} {phrase_choose()[1]} {phrase_choose()[2]} {phrase_choose()[3]},{title}, {content}. {phrase_choose()[4]}'''
+                phrase=f'''{phrase_choose()[0]} {phrase_choose()[1]} {phrase_choose()[2]}, {title}, {content}.  {phrase_choose()[3]} {phrase_choose()[4]}'''
                 
                 
                 print(f'{" ".join(title.split()[:10])} DONE')

@@ -13,7 +13,6 @@ idna==3.3
 imageio==2.16.2
 imageio-ffmpeg==0.4.7
 moviepy==1.0.3
-msedge-selenium-tools==3.141.4
 numpy==1.22.3
 outcome==1.1.0
 Pillow==9.1.0
@@ -25,7 +24,6 @@ pyOpenSSL==22.0.0
 PySimpleGUI==4.59.0
 PySocks==1.7.1
 requests==2.27.1
-selenium==3.141.0
 six==1.16.0
 sniffio==1.2.0
 sortedcontainers==2.4.0
