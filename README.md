@@ -1,6 +1,7 @@
 # PyThinAir
 ## Preview
 Create videos out of thin air, It automatically fetch internet stories and create videos out of it with awesome background music and voiceover.
+View sample videos on [youtube](https://www.youtube.com/channel/UCAK3NCcUFDkqtKwjfoYn9jA) 
 
 ## PRAW
 It uses praw, so you need to register your app on reddit in order to fetch the post.
