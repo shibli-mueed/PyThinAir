@@ -1,8 +1,9 @@
 # PyThinAir
 ## Preview
 Create videos out of thin air, It automatically fetch internet stories and create videos out of it with awesome background music and voiceover.
-View sample videos on [youtube](https://www.youtube.com/channel/UCAK3NCcUFDkqtKwjfoYn9jA) 
-
+View sample videos on [youtube](https://www.youtube.com/channel/UCAK3NCcUFDkqtKwjfoYn9jA)
+<br><br><p align='center'>
+<img src="https://github.com/shibli-mueed/PyThinAir/blob/2516496af24502bcc24f6a88e79158042c37b66e/Screenshot%202022-04-24%20022912.png" width="400" title="GUI Screenshot" alt="screenshot"></p>
 ## Requirement
 * Python 3.6 or above
 
