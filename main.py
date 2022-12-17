@@ -1,134 +1,148 @@
-#selecting the enviroment
-import sys
-x = ['',
-     'dirtyenv',
-     'dirtyenv\\lib\\site-packages']
+# GUI libraries
+import flet as ft
+from flet.buttons import RoundedRectangleBorder
+from flet.text import TextThemeStyle 
 
-for a in x:
-    sys.path.append(a)
-
-#system libraries
+# System libraries
 from os import path,mkdir
 from time import sleep
 import json
 
-#path
+#dependencies
+from  machine import fetch, convert_audio, convert_video
+
+# Path
 root = path.dirname(path.realpath(__file__)).replace('\\', '/')
+
+def UI(page: ft.Page):
+    page.title = "PyThinAir Pannel"
+    page.padding = 50
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.START
+    page.scroll = "always"
     
-#GUI libraries
-import PySimpleGUI as sg
-
-
-
-
-
-#Theme and layout
-sg.theme('Black')
-sg.set_options(font='Calibri 13',input_elements_background_color="#000")
-layout = [
-    [sg.Push(),sg.Text('ʕっ•ᴥ•ʔっ')],
-    [sg.Text("Subreddit "),sg.Input(key='sub',
-                                    default_text='confession',
-                                    border_width=0)],
+    selected_subreddit = ft.TextField(value="confession",  label="Subreddit", width=410)
+    selected_time = ft.Dropdown(
+        width=200, label="Time",value="week",
+        options=[
+            ft.dropdown.Option("all"),
+            ft.dropdown.Option("hour"),
+            ft.dropdown.Option("day"),
+            ft.dropdown.Option("week"),
+            ft.dropdown.Option("month"),
+            ft.dropdown.Option("year"),          
+        ],
+    )
+    limit = ft.TextField(value="2", width=200, label="Quantity",)
     
-    [sg.Text("Time "),sg.Combo(['week','month','day','all','year','hour'],
-                              key='time',
-                              expand_x=True,
-                              default_value='week'
-                              )],
+    progress = ft.Row(
+        [
+            ft.ProgressBar(width=410)
+        ],
+        # alignment=ft.MainAxisAlignment.CENTER
+    )
+    titles = ft.Text("Feched Titles",style=TextThemeStyle.TITLE_LARGE)
+    items = []
     
-    [sg.Text("Max Quantity "),sg.Input(key='limit',
-                                       expand_x=True,
-                                       border_width=0,
-                                       default_text=7)],
+    dick={}
     
-    [sg.Button("Do this shit now!",key='submit',expand_x=True)],
-    [sg.Output(size=(60,10),echo_stdout_stderr=True)]
-]
-
-window = sg.Window("PyThinAir Pannel",
-                   layout,
-                   no_titlebar=False)
-
-#initialize
-def initialize():
-    if path.exists(f"{root}/machine/res/reddit.json") == False:
-        print('''Error: Reddit Credentials are missing in diarectory!
-                        /machine/res/reddit.json''')
-        return False
-    if path.exists(f"{root}/machine/res/res.json") == False:
-        print('''Error: Resources File is missing in diarectory!
-                        machine/res/res.json''')    
-        return False
-    if path.isdir(f"{root}/audio") == False:
-        mkdir(f"{root}/audio")
-    if path.isdir(f"{root}/video") == False:
-        mkdir(f"{root}/video")
+    def main(e):
+        dick = {
+            "sub":selected_subreddit.value,
+            "time":selected_time.value,
+            "limit":limit.value
+        }
+        if len(items)!=0:
+            for i in items:
+                page.controls.remove(i)
         
-    if path.exists(f"{root}/database.json") == False:
-        json.dump({},open("database.json",'w'))
-    
-    return True
+        
+        
+        page.add(progress)
+        
+        keys,vals = fetch.scrap(dick,root)
+        
+        for i in keys:
+            item = ft.Row(
+                        [
+                            ft.Column([ ft.Text(i)]),
+                        ],
+                        # alignment=ft.MainAxisAlignment.START
+                    )
+            page.add(item)
+            items.append(item)
+            page.update()
+            
+            
+        # audio.convert_audio(keys, vals, root)
+        # video.convert_video(keys,vals,root)
+        
+        convert_audio(keys, vals, root)
+        convert_video(keys,vals,root)
+        
+        page.controls.remove(progress)
+        # print(type(page.controls))
+        page.update()
+        
+    # Initialize
+    def initialize():
+        if path.exists(f"{root}/machine/res/reddit.json") == False:
+            print('''Error: Reddit Credentials are missing in diarectory!
+                            /machine/res/reddit.json''')
+            return False
+        if path.exists(f"{root}/machine/res/res.json") == False:
+            print('''Error: Resources File is missing in diarectory!
+                            machine/res/res.json''')    
+            return False
+        if path.isdir(f"{root}/audio") == False:
+            mkdir(f"{root}/audio")
+        if path.isdir(f"{root}/video") == False:
+            mkdir(f"{root}/video")
+            
+        if path.exists(f"{root}/database.json") == False:
+            json.dump({},open("database.json",'w'))
+        
+        return True
 
-
-
-
-#main function
-def main():
+    initialize()
     
-    #dependencies
-    import machine.fetcher as fetch
-    import machine.audio as audio
-    import machine.video as video
-    
-    print("Status: Fetching...")
-    #sleep(0.5)
-    
-    keys,vals = fetch.scrap(value,root)
-    
-    
-    print("\nStatus: Fetched!")
-    #sleep(0.5)
-    
-
-    print("\nStatus: Converting Audio...")
-    #sleep(0.5)
-    audio.convert_audio(keys, vals, root)
-    
-    
-    print("\nStatus: Audio Converted")
-    #sleep(0.5)
-    
-    print("\nStatus: Converting Video...")
-    video.convert_video(keys,vals,root)
-    
-    print("\nStatus: Video Converted")
-
-
-
-
-
-
-while True:
-    event, value = window.read()
-    if initialize():
-        if event == 'submit':
-            if value['sub'] == "":
-                print("Subreddit not mentioned!")
-                continue
+    page.add(
+        ft.Row([ft.Text(
+            "ʕっ•ᴥ•ʔっ",
+            style=TextThemeStyle.TITLE_LARGE
+            )
+                ]),
+        ft.Row(
+            [
+                # ft.Text("SubReddit"),
+                selected_subreddit
                 
-            if value['time'] == "":
-                print("Time not mentioned!")
-                continue
-                
-            if value['limit'] == "":
-                print("Quantity not mentioned!")
-                continue
-            main()  
+            ],
+            # alignment=ft.MainAxisAlignment.CENTER
+        ),
+        ft.Row(
+            [
+                selected_time,
+                limit
+            ],
+            # alignment=ft.MainAxisAlignment.CENTER
+        ),
+        ft.Row(
+            [
+                ft.FloatingActionButton(text="Do this shit now!",
+                                  width=410,
+                                  on_click=main,
+                                  shape=ft.RoundedRectangleBorder(radius=5),
+                                  ),
+            ],
+            # alignment=ft.MainAxisAlignment.CENTER
+        ),
+        ft.Row([
+            titles
+        ]
+        )
+    )
     
-    if event ==sg.WIN_CLOSED:
-        break
     
- 
-window.close()   
-
+    
+ft.app(target=UI,view=ft.WEB_BROWSER)
